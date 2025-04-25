@@ -17,11 +17,16 @@ jobs:
       - run:
           name: Upload to Zephyr Scale
           command: |
-            curl -X POST \
-              -H "Authorization: Bearer $ZEPHYR_TOKEN" \
-              -H "Content-Type: multipart/form-data" \
-              -F "file=@test-results/test-results.xml" \
-              "https://api.zephyrscale.smartbear.com/v2/automations/executions/junit?projectKey=AT"
+            if [ -f test-results/test-results.xml ]; then
+              curl -X POST \
+                -H "Authorization: Bearer $ZEPHYR_TOKEN" \
+                -H "Content-Type: multipart/form-data" \
+                -F "file=@test-results/test-results.xml" \
+                "https://api.zephyrscale.smartbear.com/v2/automations/executions/junit?projectKey=AT"
+            else
+              echo "Test results file not found."
+              exit 1
+            fi
       - run:
           name: Link Execution to Jira Issue
           command: |
@@ -43,4 +48,3 @@ workflows:
   test:
     jobs:
       - test
-
