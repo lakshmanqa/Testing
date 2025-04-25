@@ -11,7 +11,7 @@ jobs:
           command: npm ci
       - run:
           name: Run Playwright Tests
-          command: npx playwright test --reporter=junit
+          command: npx playwright test --reporter=junit:test-results/test-results.xml
       - store_test_results:
           path: test-results
       - run:
