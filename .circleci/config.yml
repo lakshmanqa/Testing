@@ -6,14 +6,18 @@ jobs:
       - image: mcr.microsoft.com/playwright:v1.52.0-jammy
     steps:
       - checkout
+
       - run:
           name: Install Dependencies
           command: npm ci
+
       - run:
           name: Run Playwright Tests
           command: npx playwright test
+
       - store_test_results:
           path: test-results
+
       - run:
           name: Upload to Zephyr Scale
           command: |
@@ -26,11 +30,21 @@ jobs:
             else
               echo "Test results not found, skipping Zephyr upload."
             fi
+
       - run:
           name: Link Execution to Jira Issue
           command: |
             ISSUE_KEY=$(git log -1 --pretty=%B | grep -oE '[A-Z]+-[0-9]+')
-            echo "Linking execution to Jira issue: $ISSUE_KEY"
+            if [ -z "$ISSUE_KEY" ]; then
+              echo " No Jira issue key found in commit message. Skipping Jira linking step."
+              exit 0
+            fi
+
+            echo " Linking execution to Jira issue: $ISSUE_KEY"
+
+            # Install jq (lightweight JSON parser)
+            apt-get update && apt-get install -y jq
+
             EXECUTION_KEY=$(curl -s -X GET \
               -H "Authorization: Bearer $ZEPHYR_TOKEN" \
               "https://api.zephyrscale.smartbear.com/v2/testexecutions?projectKey=AT&maxResults=1&orderBy=createdDate&sortOrder=DESC" \
