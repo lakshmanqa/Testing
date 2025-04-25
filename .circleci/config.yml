@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   test:
     docker:
-      - image: mcr.microsoft.com/playwright:v1.50.1-jammy
+      - image: mcr.microsoft.com/playwright:v1.52.0-jammy  
     steps:
       - checkout
       - run:
@@ -38,6 +38,7 @@ jobs:
               -H "Content-Type: application/json" \
               -d "{\"issueKeys\": [\"$ISSUE_KEY\"]}" \
               "https://api.zephyrscale.smartbear.com/v2/testexecutions/$EXECUTION_KEY/issues"
+
 workflows:
   test:
     jobs:
