@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test.use({ headless: false });
+test.use({ headless: true });
 
 test('Login and Logout Test', async ({ page }) => {
   // Navigate to the login page
